@@ -1,3 +1,19 @@
+# /becoming_a_django_entdev/settings.py
+import os
+import posixpath
+import django_heroku
+import dj_database_url
+import dotenv
+
+BASE_DIR = os.path.dirname(
+    os.path.dirname(os.path.abspath(__file__))
+)
+
+dotenv_file = os.path.join(BASE_DIR, ".env")
+if os.path.isfile(dotenv_file):
+    dotenv.load_dotenv(dotenv_file)
+SECRET_KEY = os.getenv('SECRET_KEY')
+
 """
 Django settings for becoming_a_django_entdev project.
 
@@ -14,7 +30,6 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -47,6 +62,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware'
 ]
 
 ROOT_URLCONF = 'becoming_a_django_entdev.urls'
@@ -115,9 +131,22 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATIC_URL = '/staticfiles/'
+STATIC_ROOT = posixpath.join(
+    *(str(BASE_DIR).split(os.path.sep) + ['staticfiles'])
+)
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = posixpath.join(
+    *(str(BASE_DIR).split(os.path.sep) + ['media'])
+)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+django_heroku.settings(locals())
+
+# del DATABASES['default']['OPTIONS']['sslmode'] # Remove this line if you're not using SSL

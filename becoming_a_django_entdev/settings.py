@@ -138,7 +138,9 @@ STATIC_ROOT = posixpath.join(
 )
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(*(BASE_DIR.split(os.path.sep) + ['media']))
+MEDIA_ROOT = posixpath.join(
+    *(BASE_DIR.split(os.path.sep) ['media'])
+)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

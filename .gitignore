@@ -69,3 +69,5 @@ virtual_venv/
 *.history
 obj/
 staticfiles/
+pgadmin-data/
+postgres-data/

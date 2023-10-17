@@ -52,6 +52,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
+    'becoming_a_django_entdev.chapter_2'
 ]
 
 MIDDLEWARE = [
@@ -90,10 +92,13 @@ WSGI_APPLICATION = 'becoming_a_django_entdev.wsgi.application'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    # }
+    'default': dj_database_url.config(
+        conn_max_age=600
+    )
 }
 
 
@@ -147,6 +152,12 @@ MEDIA_ROOT = posixpath.join(
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-django_heroku.settings(locals())
+django_heroku.settings(locals(), staticfiles=False)
 
-# del DATABASES['default']['OPTIONS']['sslmode'] # Remove this line if you're not using SSL
+# Since the dj_database_url module will try to log into Heroku using a Secure Sockets Layer (SSL) connection, we will have issues running the project locally when connected to a remote database. To avoid those issues, we will have to add the following code to the bottom of the settings.py file.
+
+# options = DATABASES['default'].get('OPTIONS', {})
+# options.pop('sslmode', None)
+
+# Remove this line if you're not using SSL
+del DATABASES['default']['OPTIONS']['sslmode'] 
